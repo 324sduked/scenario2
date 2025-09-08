@@ -35,10 +35,12 @@ public class SignUpForm extends BaseForm {
     }
 
     public void shouldBeAlertThatSaysToFillOutBothTextAreasVisible() {
-        Assert.assertTrue(switchTo().alert().getText().equals("Please fill out Username and Password."));
+        Assert.assertEquals(switchTo().alert().getText(), "Please fill out Username and Password.");
+        switchTo().alert().accept();
     }
 
     public void shouldBeAlertSignUpSuccessfulVisible() {
-        Assert.assertTrue(switchTo().alert().getText().equals("Sign up successful."));
+        Assert.assertEquals(switchTo().alert().getText(), "Sign up successful.");
+        switchTo().alert().accept();
     }
 }

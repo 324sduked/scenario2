@@ -8,8 +8,8 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class ProductPage {
 
-    private SelenideElement addToCartButton = $(".btn-success");
-    private SelenideElement homePageLink = $(By.xpath("//div[@id='navbarExample']//a[contains(text(), \"Home\")]"));
+    private final SelenideElement addToCartButton = $(".btn-success");
+    private final SelenideElement homePageLink = $(By.xpath("//div[@id='navbarExample']//a[contains(text(), \"Home\")]"));
 
 
     public void clickOnAddToCartButton() {
@@ -24,9 +24,6 @@ public class ProductPage {
                 return false;
             }
         });
-    }
-
-    public void acceptAlert() {
         switchTo().alert().accept();
     }
 

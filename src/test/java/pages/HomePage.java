@@ -10,6 +10,8 @@ import org.testng.Assert;
 import java.util.List;
 import java.util.Map;
 
+import static com.codeborne.selenide.Condition.clickable;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class HomePage {
@@ -37,25 +39,12 @@ public class HomePage {
     }
 
     public void clickOnSpecificDevice(String deviceName) {
-        displayedDevicesTitles.findBy(Condition.text(deviceName)).shouldBe(Condition.visible).click();
+        displayedDevicesTitles.findBy(Condition.text(deviceName)).shouldBe(visible).click();
     }
-
-    public void shouldBeHomePageDisplayed(){
-        String url = WebDriverRunner.getWebDriver().getCurrentUrl();
-        Assert.assertEquals(url, "https://www.demoblaze.com/index.html");
-    }
-
-    public void shouldBeWelcomeAfterLoggingIn(String expectedUsername) {
-        welcomeAfterLoggingIn.shouldHave(Condition.text("Welcome " + expectedUsername));
-    }
-
-    public void shouldBeListOfDevicesVisible() {
-        displayedDevicesTitles.stream().anyMatch(element -> element.isDisplayed());
-    }
-
 
     public void shouldBeDevicesDisplayed(List<String> expectedDevices) {
         sleep(1000);
+        displayedDevicesTitles.forEach(title -> title.shouldBe(clickable));
         boolean areDevicesDisplayed = displayedDevicesTitles.stream()
                 .anyMatch(device ->
                         expectedDevices.stream()
@@ -64,6 +53,19 @@ public class HomePage {
 
         Assert.assertTrue(areDevicesDisplayed,
                 "Expected at least one of " + expectedDevices + " to be displayed");
+    }
+
+    public void shouldBeHomePageDisplayed() {
+        String url = WebDriverRunner.getWebDriver().getCurrentUrl();
+        Assert.assertEquals(url, "https://www.demoblaze.com/index.html");
+    }
+
+    public void shouldBeWelcomeAfterLoggingIn(String expectedUsername) {
+        welcomeAfterLoggingIn.shouldHave(Condition.text("Welcome " + expectedUsername));
+    }
+
+    public ElementsCollection getDisplayedDevicesTitles() {
+        return displayedDevicesTitles;
     }
 
 }

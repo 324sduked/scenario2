@@ -1,8 +1,11 @@
 package pages;
 
-import com.codeborne.selenide.*;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
-import org.testng.Assert;
+
+import java.util.List;
 
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Selenide.*;
@@ -11,27 +14,25 @@ public class CartPage {
 
     private final SelenideElement totalPrice = $("#totalp");
     private final ElementsCollection pricesOfDevices = $$(By.xpath("//tbody/tr/td[3]"));
+
+    public ElementsCollection getPricesOfDevices() {
+        return pricesOfDevices;
+    }
+
     private final ElementsCollection rowsInCart = $$("#tbodyid > tr");
+
     private final SelenideElement tableBody = $("#tbodyid");
     private final SelenideElement placeOrderButton = $(".col-lg-1 > button ");
 
-    public Integer calculateTotalPrice() {
-        int totalPrice = 0;
-        for (SelenideElement price : pricesOfDevices) {
-            String text = price.getText();
-            totalPrice = totalPrice + Integer.parseInt(text);
-        }
-        return totalPrice;
-    }
 
-    public void shouldBeCalculatedTotalPriceEqualToDisplayedOne(Integer calculatedTotalPrice) {
-        Assert.assertEquals(totalPrice.getText(), calculatedTotalPrice.toString());
+    public SelenideElement getTotalPrice() {
+        return totalPrice;
     }
 
     public void deleteDeviceByName(String name) {
         SelenideElement row = rowsInCart
                 .filterBy(Condition.text(name))
-                .first(); // row that contains the name (works if only td[2] has the name)
+                .first();
         row.should(exist);
         row.$(By.xpath("td[4]/a")).click();
 
@@ -50,7 +51,13 @@ public class CartPage {
         placeOrderButton.click();
     }
 
-    public void shouldBeCartSizeOneLess(int initialCartSize) {
-        rowsInCart.shouldHave(CollectionCondition.size(initialCartSize - 1));
+    public List<Integer> getDevicePrices() {
+        return getPricesOfDevices().stream()
+                .map(el -> Integer.parseInt(el.getText()))
+                .toList();
+    }
+
+    public int getDisplayedTotal() {
+        return Integer.parseInt(getTotalPrice().getText());
     }
 }
